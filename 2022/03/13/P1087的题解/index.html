@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>P1087的题解 | osfly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="原题传送门 好久没写题解了QwQ 这道题我的代码感觉很像线段树(?) 我们先把这道题拆成两个部分：建树、遍历 part.1 建树我们可以每一次传入三个值：当前的结点和当前结点所对应的串的左右端点的下标 当然，我们还要专门写一个判断当前这个串的类型 具体的看注释 123456789101112131415161718192021222324char FBI(int l,int r)		&#x2F;&#x2F;该串的左右">
+<meta property="og:type" content="article">
+<meta property="og:title" content="P1087的题解">
+<meta property="og:url" content="http://example.com/2022/03/13/P1087%E7%9A%84%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="osfly">
+<meta property="og:description" content="原题传送门 好久没写题解了QwQ 这道题我的代码感觉很像线段树(?) 我们先把这道题拆成两个部分：建树、遍历 part.1 建树我们可以每一次传入三个值：当前的结点和当前结点所对应的串的左右端点的下标 当然，我们还要专门写一个判断当前这个串的类型 具体的看注释 123456789101112131415161718192021222324char FBI(int l,int r)		&#x2F;&#x2F;该串的左右">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-13T03:16:09.000Z">
+<meta property="article:modified_time" content="2022-03-13T03:16:51.979Z">
+<meta property="article:author" content="osfly">
+<meta property="article:tag" content="题解">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="osfly" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">osfly</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">全机房最蒟的OIer&#39;s blog</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-P1087的题解" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/03/13/P1087%E7%9A%84%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time class="dt-published" datetime="2022-03-13T03:16:09.000Z" itemprop="datePublished">2022-03-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      P1087的题解
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1087">原题传送门</a></p>
+<p>好久没写题解了QwQ</p>
+<p>这道题我的代码感觉很像线段树(?)</p>
+<p>我们先把这道题拆成两个部分：建树、遍历</p>
+<h1 id="part-1-建树"><a href="#part-1-建树" class="headerlink" title="part.1 建树"></a>part.1 建树</h1><p>我们可以每一次传入三个值：当前的结点和当前结点所对应的串的左右端点的下标</p>
+<p>当然，我们还要专门写一个判断当前这个串的类型</p>
+<p>具体的看注释</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">char</span> <span class="title">FBI</span><span class="params">(<span class="type">int</span> l,<span class="type">int</span> r)</span>		<span class="comment">//该串的左右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">bool</span> B=<span class="literal">false</span>;			<span class="comment">//判断该串0是否出现</span></span><br><span class="line">	<span class="type">bool</span> I=<span class="literal">false</span>;			<span class="comment">//判断该串1是否出现</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=l;i&lt;=r;i++)	<span class="comment">//扫一遍</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(s[i]==<span class="number">0</span>) B=<span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">if</span>(s[i]==<span class="number">1</span>) I=<span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">   	<span class="comment">//返回</span></span><br><span class="line">	<span class="keyword">if</span>(B&amp;&amp;I) <span class="keyword">return</span> <span class="string">&#x27;F&#x27;</span>;</span><br><span class="line">	<span class="keyword">if</span>(B&amp;&amp;!I) <span class="keyword">return</span> <span class="string">&#x27;B&#x27;</span>;</span><br><span class="line">	<span class="keyword">if</span>(!B&amp;&amp;I) <span class="keyword">return</span> <span class="string">&#x27;I&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span> p,<span class="type">int</span> l,<span class="type">int</span> r)</span>		<span class="comment">//p:当前结点 l:左端点 r:右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	tree[p]=<span class="built_in">FBI</span>(l,r);		<span class="comment">//赋值当前结点所对应的的串的类型</span></span><br><span class="line">	<span class="keyword">if</span>(l!=r)				<span class="comment">//如果不是该树的最后一层，那么继续构造</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> mid=(l+r)/<span class="number">2</span>;		<span class="comment">//求出分界线</span></span><br><span class="line">		<span class="built_in">build</span>(p*<span class="number">2</span>,l,mid);		<span class="comment">//构造左子树</span></span><br><span class="line">		<span class="built_in">build</span>(p*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);	<span class="comment">//构造右子树</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="part-2-遍历"><a href="#part-2-遍历" class="headerlink" title="part.2 遍历"></a>part.2 遍历</h1><p>遍历部分更简单了吧</p>
+<p>就是分两种情况：</p>
+<p>1.若该节点不在最后一层，那么先遍历左右子树，最后输出该节点</p>
+<p>2.若该节点在最后一层，直接输出</p>
+<p>如何判断该节点的位置呢？我还是用了左右端点，或者也可以直接用最后一层的范围去判断</p>
+<p>$n$层的树的最后一层的范围：</p>
+<p>$\large2^{n-1}$~$\large2^n-1$</p>
+<p><del>这个蒟蒻很懒不想写</del></p>
+<p>具体看注释叭</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">LRD</span><span class="params">(<span class="type">int</span> p,<span class="type">int</span> l,<span class="type">int</span> r)</span>		<span class="comment">//p:当前结点	l:左端点	r:右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,tree[p]);	<span class="comment">//如果是最后一层，直接输出</span></span><br><span class="line">	<span class="keyword">else</span>							<span class="comment">//不在最后一层</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> mid=(l+r)/<span class="number">2</span>;			<span class="comment">//求出分界线</span></span><br><span class="line">		<span class="built_in">LRD</span>(p*<span class="number">2</span>,l,mid);				<span class="comment">//遍历左子树</span></span><br><span class="line">		<span class="built_in">LRD</span>(p*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);			<span class="comment">//遍历右子树</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,tree[p]);		<span class="comment">//输出</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="都到这里了还不会？"><a href="#都到这里了还不会？" class="headerlink" title="都到这里了还不会？"></a><del>都到这里了还不会？</del></h3><p>完整代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line"><span class="type">int</span> s[<span class="number">3000</span>];</span><br><span class="line"><span class="type">char</span> tree[<span class="number">3000</span>];</span><br><span class="line">string str;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">m</span><span class="params">(<span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> a=<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=p;i++) a*=<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">char</span> <span class="title">FBI</span><span class="params">(<span class="type">int</span> l,<span class="type">int</span> r)</span>			<span class="comment">//该串的左右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">bool</span> B=<span class="literal">false</span>;				<span class="comment">//判断该串0是否出现</span></span><br><span class="line">	<span class="type">bool</span> I=<span class="literal">false</span>;				<span class="comment">//判断该串1是否出现</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=l;i&lt;=r;i++)		<span class="comment">//扫一遍</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(s[i]==<span class="number">0</span>) B=<span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">if</span>(s[i]==<span class="number">1</span>) I=<span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">  	<span class="comment">//返回</span></span><br><span class="line">	<span class="keyword">if</span>(B&amp;&amp;I) <span class="keyword">return</span> <span class="string">&#x27;F&#x27;</span>;</span><br><span class="line">	<span class="keyword">if</span>(B&amp;&amp;!I) <span class="keyword">return</span> <span class="string">&#x27;B&#x27;</span>;</span><br><span class="line">	<span class="keyword">if</span>(!B&amp;&amp;I) <span class="keyword">return</span> <span class="string">&#x27;I&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">build</span><span class="params">(<span class="type">int</span> p,<span class="type">int</span> l,<span class="type">int</span> r)</span>		<span class="comment">//p:当前结点 l:左端点 r:右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	tree[p]=<span class="built_in">FBI</span>(l,r);		<span class="comment">//赋值当前结点所对应的的串的类型</span></span><br><span class="line">	<span class="keyword">if</span>(l!=r)				<span class="comment">//如果不是该树的最后一层，那么继续构造</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> mid=(l+r)/<span class="number">2</span>;		<span class="comment">//求出分界线</span></span><br><span class="line">		<span class="built_in">build</span>(p*<span class="number">2</span>,l,mid);		<span class="comment">//构造左子树</span></span><br><span class="line">		<span class="built_in">build</span>(p*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);	<span class="comment">//构造右子树</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">LRD</span><span class="params">(<span class="type">int</span> p,<span class="type">int</span> l,<span class="type">int</span> r)</span>		<span class="comment">//p:当前结点	l:左端点	r:右端点</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,tree[p]);	<span class="comment">//如果是最后一层，直接输出</span></span><br><span class="line">	<span class="keyword">else</span>							<span class="comment">//不在最后一层</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> mid=(l+r)/<span class="number">2</span>;			<span class="comment">//求出分界线</span></span><br><span class="line">		<span class="built_in">LRD</span>(p*<span class="number">2</span>,l,mid);				<span class="comment">//遍历左子树</span></span><br><span class="line">		<span class="built_in">LRD</span>(p*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);			<span class="comment">//遍历右子树</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,tree[p]);		<span class="comment">//输出</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cin&gt;&gt;n&gt;&gt;str;		<span class="comment">//输入</span></span><br><span class="line">   	<span class="comment">//转成数字方便操作</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>,j=<span class="number">1</span>;i&lt;str.<span class="built_in">size</span>();i++,j++) s[j]=str[i]-<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">	<span class="built_in">build</span>(<span class="number">1</span>,<span class="number">1</span>,<span class="built_in">m</span>(n));	<span class="comment">//建树</span></span><br><span class="line">	<span class="built_in">LRD</span>(<span class="number">1</span>,<span class="number">1</span>,<span class="built_in">m</span>(n));		<span class="comment">//遍历</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>码风可能不好，见谅！</p>
+<p>求赞</p>
+<p>thanks for reading</p>
+<p><del>从某位大佬学来的</del></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/03/13/P1087%E7%9A%84%E9%A2%98%E8%A7%A3/" data-id="cl0opucol0004wguwb9e909t9" data-title="P1087的题解" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag">题解</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/03/13/NOI-1-13-41%E7%9A%84%E9%A2%98%E8%A7%A3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          NOI-1.13-41的题解
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/03/13/CSP-2021-J2%E6%B8%B8%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">CSP-2021-J2游记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/idea/" rel="tag">idea</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B8%B8%E8%AE%B0/" rel="tag">游记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag">题解</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/idea/" style="font-size: 10px;">idea</a> <a href="/tags/%E6%B8%B8%E8%AE%B0/" style="font-size: 15px;">游记</a> <a href="/tags/%E9%A2%98%E8%A7%A3/" style="font-size: 20px;">题解</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">三月 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/03/13/P4956%E7%9A%84%E9%A2%98%E8%A7%A3/">P4956的题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/13/P1451%E7%9A%84%E9%A2%98%E8%A7%A3/">P1451的题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/13/U124916%E7%9A%84%E9%A2%98%E8%A7%A3/">U124916的题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/13/U124875%E7%9A%84%E9%A2%98%E8%A7%A3/">U124875的题解</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/13/%E5%B0%B1%E8%BF%99%E6%A0%B7%EF%BC%8C%E5%9F%8B%E4%B8%8B%E4%B8%80%E4%B8%AA%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E7%A7%8D%E5%AD%90/">就这样，埋下一个二叉树的种子</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 osfly<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
+</html>
